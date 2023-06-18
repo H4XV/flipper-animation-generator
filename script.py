@@ -20,13 +20,7 @@ print("""\u001b[45;1m \u001b[30m _    _   _  _    __   ____      __\u001b[40m
 \u001b[0m \u001b[40m""")
 
 def resize_gifs(input_dir, new_size):
-    """
-    Verkleinert alle GIF-Dateien im angegebenen Verzeichnis und ersetzt die ursprünglichen GIFs.
-    
-    Args:
-        input_dir (str): Verzeichnis, in dem sich die GIF-Dateien befinden.
-        new_size (tuple): Zielgröße für die verkleinerten GIFs, als Tupel (Breite, Höhe).
-    """
+
     for filename in os.listdir(input_dir):
         if filename.endswith(".gif"):
             filepath = os.path.join(input_dir, filename)
@@ -48,7 +42,7 @@ def resize_gifs(input_dir, new_size):
                 loop=0
             )
             
-            print(f"{filename} GOT REPLACES SUCCESSFULLY \n")
+            print(f"{filename} GOT REPLACED SUCCESSFULLY \n")
 
     print("ALL GIFS HAVE BEEN RESIZED AND REPLACED SUCCESSFULLY.\n\n\n")
 
@@ -149,7 +143,7 @@ convert_gifs_to_grayscale(input_folder, output_folder)
 
 cmd = f"python zip2Animation.py -d .\Output"
        
-       # CMD-Kommando ausführe
+       # CMD-Command for zip2Anim
 subprocess.call(cmd, shell=True)
 
 del_zips(output_folder)
