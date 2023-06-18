@@ -9,6 +9,7 @@ import subprocess
 
 input_folder = '.\input'  # Input Path
 output_folder = '.\Output'  # Output Path
+contrast = 1.25
 
 
 print("""\u001b[45;1m \u001b[30m _    _   _  _    __   ____      __\u001b[40m
@@ -54,7 +55,7 @@ def enhance_contrast(image, factor):
     enhanced_image = enhancer.enhance(factor)
     return enhanced_image
 
-def extract_frames(gif_path, output_folder):
+def extract_frames(gif_path, output_folder, contrast):
     gif = Image.open(gif_path)
     gif_frames = []
     
@@ -68,7 +69,7 @@ def extract_frames(gif_path, output_folder):
     for i, frame in enumerate(gif_frames):
         frame = frame.convert('RGB')
         frame_gray = convert_to_grayscale(frame)
-        frame_enhanced = enhance_contrast(frame_gray, 1.15)
+        frame_enhanced = enhance_contrast(frame_gray, contrast)
         
         frame_filename = f"frame_{i}.png"
         frame_path = os.path.join(output_folder, frame_filename)
@@ -124,7 +125,7 @@ def convert_gifs_to_grayscale(input_folder, output_folder):
         os.makedirs(gif_output_folder, exist_ok=True)
         
         # Extracting frames of the gif
-        extract_frames(gif_path, gif_output_folder)
+        extract_frames(gif_path, gif_output_folder, contrast)
     
     # Creates zip files
     create_zip_folders(output_folder)
@@ -141,12 +142,14 @@ resize_gifs(input_folder, target_size)
 
 convert_gifs_to_grayscale(input_folder, output_folder)
 
+
 cmd = f"python zip2Animation.py -d .\Output"
        
        # CMD-Command for zip2Anim
 subprocess.call(cmd, shell=True)
 
 del_zips(output_folder)
+
 #Made by H4XV
 
 
