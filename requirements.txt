@@ -1,0 +1,6 @@
+pillow
+shutil
+zipfile
+time
+argparse
+subprocess
