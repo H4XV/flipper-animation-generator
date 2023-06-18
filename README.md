@@ -6,7 +6,7 @@
 
 An Automatic Animation generator
 
-Gif to Flipper Animatiom
+Gif to Flipper Animation
 
 
 
