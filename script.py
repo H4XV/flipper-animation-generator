@@ -1,4 +1,5 @@
 from PIL import Image, ImageEnhance
+from PIL import Image
 import os
 import shutil
 import zipfile
@@ -6,8 +7,50 @@ import subprocess
 
 #Made by H4XV
 
-input_folder = '.\input'  # Passe den Pfad zum Eingabeordner an
-output_folder = '.\Output'  # Passe den Pfad zum Ausgabeordner an
+input_folder = '.\input'  # Input Path
+output_folder = '.\Output'  # Output Path
+
+
+print("""\u001b[45;1m \u001b[30m _    _   _  _    __   ____      __\u001b[40m
+\u001b[45;1m \u001b[30m| |  | | | || |   \ \ / /\ \    / /\u001b[40m
+\u001b[45;1m \u001b[30m| |__| | | || |_   \ V /  \ \  / / \u001b[40m
+\u001b[45;1m \u001b[30m|  __  | |__   _|   > <    \ \/ /  \u001b[40m
+\u001b[45;1m \u001b[30m| |  | |    | |    / . \    \  /   \u001b[40m
+\u001b[45;1m \u001b[30m|_|  |_|    |_|   /_/ \_\    \/    \u001b[0m \u001b[40m \u001b[47;1m \u001b[0m
+\u001b[0m \u001b[40m""")
+
+def resize_gifs(input_dir, new_size):
+    """
+    Verkleinert alle GIF-Dateien im angegebenen Verzeichnis und ersetzt die ursprünglichen GIFs.
+    
+    Args:
+        input_dir (str): Verzeichnis, in dem sich die GIF-Dateien befinden.
+        new_size (tuple): Zielgröße für die verkleinerten GIFs, als Tupel (Breite, Höhe).
+    """
+    for filename in os.listdir(input_dir):
+        if filename.endswith(".gif"):
+            filepath = os.path.join(input_dir, filename)
+            gif = Image.open(filepath)
+            
+            # SHRINK SINGLE FRAMES
+            resized_frames = []
+            for frame in range(gif.n_frames):
+                gif.seek(frame)
+                resized_frame = gif.resize(new_size, Image.ANTIALIAS)
+                resized_frames.append(resized_frame.copy())
+            
+            # REMERGE FRAMES TO GIF
+            output_filepath = filepath  # OVERWRITE OLD GIF
+            resized_frames[0].save(
+                output_filepath,
+                save_all=True,
+                append_images=resized_frames[1:],
+                loop=0
+            )
+            
+            print(f"{filename} GOT REPLACES SUCCESSFULLY \n")
+
+    print("ALL GIFS HAVE BEEN RESIZED AND REPLACED SUCCESSFULLY.\n\n\n")
 
 def convert_to_grayscale(image):
     return image.convert('L')
@@ -59,7 +102,7 @@ def del_folders(output_folder):
     for folder in subfolders:
         try:
             shutil.rmtree(folder)
-            print("DELETING FOLDERS.")#Made by H4XV
+            print("--DELETING FOLDERS.--\n")#Made by H4XV
         except OSError as e:
             print(f"ERROR WHILE DELETING FOLDERS: {e}")
 
@@ -69,9 +112,11 @@ def del_zips(output_folder):
     for zip in zip_files:
         try:
             os.remove(zip)
-            print(f"DELETING ZIP {zip}")
+            print(f"\n--DELETING ZIP {zip}--")
         except OSError as e:
-            print(f"ERROR WHILE DELETING FOLDERS: {e}")
+            print(f"***ERROR WHILE DELETING FOLDERS: {e}***")
+
+
 
 
 def convert_gifs_to_grayscale(input_folder, output_folder):
@@ -92,15 +137,19 @@ def convert_gifs_to_grayscale(input_folder, output_folder):
     
     #Delets Folder
     del_folders(output_folder)
-#Made by H4XV
+    #Made by H4XV
 
+
+
+target_size = (128, 64)
+resize_gifs(input_folder, target_size)
 
 
 convert_gifs_to_grayscale(input_folder, output_folder)
 
 cmd = f"python zip2Animation.py -d .\Output"
-        
-        # CMD-Kommando ausführe
+       
+       # CMD-Kommando ausführe
 subprocess.call(cmd, shell=True)
 
 del_zips(output_folder)
