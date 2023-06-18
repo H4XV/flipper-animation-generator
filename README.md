@@ -81,7 +81,7 @@ IF ANY MORE HELP NEEDED [WATCH THE VIDEO](https://www.youtube.com/watch?v=trpcZL
 ## Special thanks to
 
  - [CharlesTheGreat77(zip2Animation)](https://github.com/CharlesTheGreat77)
- - [TALKING SASQUACH] (https://github.com/skizzophrenic)
+ - [TALKING SASQUACH](https://github.com/skizzophrenic)
 
 
 
