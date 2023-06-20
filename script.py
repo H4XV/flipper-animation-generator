@@ -1,4 +1,5 @@
 from PIL import Image, ImageEnhance
+from PIL import Image
 import os
 import shutil
 import zipfile
@@ -6,8 +7,45 @@ import subprocess
 
 #Made by H4XV
 
-input_folder = '.\input'  # Passe den Pfad zum Eingabeordner an
-output_folder = '.\Output'  # Passe den Pfad zum Ausgabeordner an
+input_folder = '.\input'  # Input Path
+output_folder = '.\Output'  # Output Path
+contrast = 1.25
+
+
+print("""\u001b[45;1m \u001b[30m _    _   _  _    __   ____      __\u001b[40m
+\u001b[45;1m \u001b[30m| |  | | | || |   \ \ / /\ \    / /\u001b[40m
+\u001b[45;1m \u001b[30m| |__| | | || |_   \ V /  \ \  / / \u001b[40m
+\u001b[45;1m \u001b[30m|  __  | |__   _|   > <    \ \/ /  \u001b[40m
+\u001b[45;1m \u001b[30m| |  | |    | |    / . \    \  /   \u001b[40m
+\u001b[45;1m \u001b[30m|_|  |_|    |_|   /_/ \_\    \/    \u001b[0m \u001b[40m \u001b[47;1m \u001b[0m
+\u001b[0m \u001b[40m""")
+
+def resize_gifs(input_dir, new_size):
+
+    for filename in os.listdir(input_dir):
+        if filename.endswith(".gif"):
+            filepath = os.path.join(input_dir, filename)
+            gif = Image.open(filepath)
+            
+            # SHRINK SINGLE FRAMES
+            resized_frames = []
+            for frame in range(gif.n_frames):
+                gif.seek(frame)
+                resized_frame = gif.resize(new_size, Image.ANTIALIAS)
+                resized_frames.append(resized_frame.copy())
+            
+            # REMERGE FRAMES TO GIF
+            output_filepath = filepath  # OVERWRITE OLD GIF
+            resized_frames[0].save(
+                output_filepath,
+                save_all=True,
+                append_images=resized_frames[1:],
+                loop=0
+            )
+            
+            print(f"{filename} GOT REPLACED SUCCESSFULLY \n")
+
+    print("ALL GIFS HAVE BEEN RESIZED AND REPLACED SUCCESSFULLY.\n\n\n")
 
 def convert_to_grayscale(image):
     return image.convert('L')
@@ -17,7 +55,7 @@ def enhance_contrast(image, factor):
     enhanced_image = enhancer.enhance(factor)
     return enhanced_image
 
-def extract_frames(gif_path, output_folder):
+def extract_frames(gif_path, output_folder, contrast):
     gif = Image.open(gif_path)
     gif_frames = []
     
@@ -31,7 +69,7 @@ def extract_frames(gif_path, output_folder):
     for i, frame in enumerate(gif_frames):
         frame = frame.convert('RGB')
         frame_gray = convert_to_grayscale(frame)
-        frame_enhanced = enhance_contrast(frame_gray, 1.15)
+        frame_enhanced = enhance_contrast(frame_gray, contrast)
         
         frame_filename = f"frame_{i}.png"
         frame_path = os.path.join(output_folder, frame_filename)
@@ -59,7 +97,7 @@ def del_folders(output_folder):
     for folder in subfolders:
         try:
             shutil.rmtree(folder)
-            print("DELETING FOLDERS.")#Made by H4XV
+            print("--DELETING FOLDERS.--\n")#Made by H4XV
         except OSError as e:
             print(f"ERROR WHILE DELETING FOLDERS: {e}")
 
@@ -69,9 +107,11 @@ def del_zips(output_folder):
     for zip in zip_files:
         try:
             os.remove(zip)
-            print(f"DELETING ZIP {zip}")
+            print(f"\n--DELETING ZIP {zip}--")
         except OSError as e:
-            print(f"ERROR WHILE DELETING FOLDERS: {e}")
+            print(f"***ERROR WHILE DELETING FOLDERS: {e}***")
+
+
 
 
 def convert_gifs_to_grayscale(input_folder, output_folder):
@@ -85,25 +125,31 @@ def convert_gifs_to_grayscale(input_folder, output_folder):
         os.makedirs(gif_output_folder, exist_ok=True)
         
         # Extracting frames of the gif
-        extract_frames(gif_path, gif_output_folder)
+        extract_frames(gif_path, gif_output_folder, contrast)
     
     # Creates zip files
     create_zip_folders(output_folder)
     
     #Delets Folder
     del_folders(output_folder)
-#Made by H4XV
+    #Made by H4XV
 
+
+
+target_size = (128, 64)
+resize_gifs(input_folder, target_size)
 
 
 convert_gifs_to_grayscale(input_folder, output_folder)
 
+
 cmd = f"python zip2Animation.py -d .\Output"
-        
-        # CMD-Kommando ausführe
+       
+       # CMD-Command for zip2Anim
 subprocess.call(cmd, shell=True)
 
 del_zips(output_folder)
+
 #Made by H4XV
 
 
