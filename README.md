@@ -24,7 +24,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd Animation-maker
+  cd flipper-animation-generator
 ```
 
 Install dependencies
